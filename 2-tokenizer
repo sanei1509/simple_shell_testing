@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 
-int main()
+/**
+ *main - splits a string a and return an array of the words
+ */
+void main(void)
 {
-	char string[50] = "Hello world we al ls ls"; 
+	char string[50] = "Hello world we al ls ls";
 	char *token;
 
 	token = strtok(string, " ");
