@@ -13,7 +13,7 @@
 int main(void)
 {
 	int bytes_read, i;
-	size_t size;
+	size_t size = 1024;
 	char *line_read;
 	/*tokenizado*/
 	char * token; 
@@ -42,7 +42,7 @@ int main(void)
 		else
 		{
 		/*tokenizamos la linea leida*/
-			line_read = strtok(line_read, "\n");
+			line_read = strtok(line_read, "\n"); 
 			token = strtok(line_read, " ");
 
 		/*puts(line_read);*/
@@ -73,7 +73,7 @@ int main(void)
 				} 
 				else 
 				{
-					perror("Invalid Command");
+					printf("Invalid Command\n");
 				}		
 		}
 	free(line_read);
