@@ -34,12 +34,12 @@ int get_hijo_id(void)
 
 int main(void)
 {
-	int bytes_read, i;
+	int bytes_read, i = 0, count_tokens = 2;
 	size_t size;
 	char *line_read;
 	/*tokenizado*/
 	char *token;
-	char *argv[50] = {NULL};
+	char **argv = malloc(count_tokens * sizeof(char*));
 	/*execve cosas*/
 	char *env = {NULL};
 	pid_t forkResultado;
@@ -49,10 +49,8 @@ int main(void)
 		i = 0;
 		printf("#cisfun$");
 
-		/*size = 0;*/
-		/*line_read = NULL;*/
-		size = TAM_MAX;
-		line_read = (char *) malloc (size + 1);
+		size = 0;
+		line_read = NULL;
 		bytes_read = getline(&line_read, &size, stdin);
 
 	/*tokenizamos la linea leida*/
@@ -62,6 +60,7 @@ int main(void)
 		if (bytes_read == -1)
 		{
 			puts("no se reconoce como entrada valida");
+			continue;
 		}
 		else
 		{
@@ -70,15 +69,18 @@ int main(void)
 			token = strtok(line_read, " ");
 
 		/*puts(line_read);*/
-			while (token != NULL || i < 3)
+			while (token != NULL && i < count_tokens)
 			{
         		       /*printf("%s\n", line_read);*/
 				argv[i] = token;
 				token = strtok(NULL, " ");
 				i++;
 			}
+
 				if (line_read != NULL)
 				{
+						if (strcmp(argv[0], "exit") == 0)
+							break;
 					forkResultado = fork();
 						if (forkResultado == 0)
 						{
@@ -88,6 +90,8 @@ int main(void)
 							/*process of execution order*/
 							if ((execve(argv[0], argv, &env) == -1))
 							{
+								free(line_read);
+								free(argv);
 								perror("Comando no encontrado\n");
 								exit(0);
 							}
@@ -95,8 +99,8 @@ int main(void)
 						else
 						{
 							wait (NULL);
-							continue;
 						}
+						free(line_read);
 				}
 				else
 				{
@@ -104,6 +108,10 @@ int main(void)
 				}
 		}
 	free(line_read);
+	line_read = NULL;
+	free(argv);
 	}
+	free(line_read);
+	free(argv);
 	return (0);
 }
