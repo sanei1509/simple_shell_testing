@@ -6,7 +6,37 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-#define TAM_MAX 10
+/*
+char search_path(int ac, char **av, char **env)
+{
+	unsigned int i;
+
+	i = 0;
+	while (env[i] != NULL)
+	{
+		printf("%s\n", env[i]);
+		i++;
+	}
+	return (0);
+}
+*/
+
+/*deberíamos pasarle una copia del string*/
+int count_spaces(char *aux_line)
+{
+	int s = 0;
+	char *aux;
+        
+	aux = strtok(aux_line, " ");
+
+	while (aux != NULL)
+	{
+		s++;
+		aux = strtok(NULL, " ");
+	}
+
+	return (s);
+}
 
 int get_padre_id(void)
 {
@@ -26,7 +56,7 @@ int get_hijo_id(void)
 	return (0);
 }
 
-#define TAM_MAX 10
+
 /**
 *main - take the input command of the user
 *Return: 0
@@ -34,44 +64,40 @@ int get_hijo_id(void)
 
 int main(void)
 {
-	int bytes_read, i = 0, count_tokens = 2;
-	size_t size;
-	char *line_read;
-	/*tokenizado*/
-	char *token;
-	char **argv = malloc(count_tokens * sizeof(char*));
-	/*execve cosas*/
-	char *env = {NULL};
+	int bytes_read = 0, i = 0;
+	size_t size = 0;
+	char *line_read = NULL, *token = NULL, *env = {NULL};
+	char *argv[25] = {NULL};
+        
 	pid_t forkResultado;
-
+	
 	while (1)
 	{
 		i = 0;
 		printf("#cisfun$");
 
-		size = 0;
-		line_read = NULL;
 		bytes_read = getline(&line_read, &size, stdin);
-
-	/*tokenizamos la linea leida*/
-	/*token /line_read = strtok(line_read, "\n"); */
-	/*token /token = strtok(line_read, " "); */
 
 		if (bytes_read == -1)
 		{
-			puts("no se reconoce como entrada valida");
-			continue;
+			free(line_read);
+			perror("Error bytes read");
+			break;
 		}
 		else
 		{
 		/*tokenizamos la linea leida*/
+			/*aux_line = strdup(line_read); */
 			line_read = strtok(line_read, "\n");
 			token = strtok(line_read, " ");
+			
+			/*argv = calloc(25, sizeof(char *)); */
+			/*count_tokens = count_spaces(aux_line);*/
+			/*allocate memory then the counter*/
+			/*argv = calloc(count_tokens + 1, sizeof(char *));*/
 
-		/*puts(line_read);*/
-			while (token != NULL && i < count_tokens)
+			while (token != NULL)
 			{
-        		       /*printf("%s\n", line_read);*/
 				argv[i] = token;
 				token = strtok(NULL, " ");
 				i++;
@@ -79,8 +105,12 @@ int main(void)
 
 				if (line_read != NULL)
 				{
-						if (strcmp(argv[0], "exit") == 0)
-							break;
+					if (line_read[0] == '\n')
+						continue;
+					if (strcmp(argv[0], "exit") == 0)
+						break;
+					if (strcmp(argv[0], "EOF") == 0)
+						break;
 					forkResultado = fork();
 						if (forkResultado == 0)
 						{
@@ -91,7 +121,6 @@ int main(void)
 							if ((execve(argv[0], argv, &env) == -1))
 							{
 								free(line_read);
-								free(argv);
 								perror("Comando no encontrado\n");
 								exit(0);
 							}
@@ -100,18 +129,18 @@ int main(void)
 						{
 							wait (NULL);
 						}
-						free(line_read);
 				}
 				else
 				{
-					printf("Invalid Command\n");
+					free(line_read);
+					line_read = NULL;
+					continue;
 				}
 		}
 	free(line_read);
 	line_read = NULL;
-	free(argv);
 	}
 	free(line_read);
-	free(argv);
+	line_read = NULL;
 	return (0);
 }
