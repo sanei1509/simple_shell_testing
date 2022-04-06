@@ -2,30 +2,17 @@
 #include <string.h>
 #include <stdlib.h>
 
-int main(int ac, char **av, char **env)
+int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char **env)
 {
-	char *path= "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin";
-	unsigned int i;
-	char *token;
+	char *var = "PATH";	
+	unsigned int i = 0;
+        unsigned int len = strlen(var);
 
-	i = 0;
-
-	token = strtok(path, ":");	
-
-	while (env[i] != NULL)
-	{
-		if(strcmp(env[0], "PATH") == 0)
-		{
-		printf("%s\n", env[i]);
-		}
+	if (!env || !*var || strchr(var,'='))
+	printf("error"); /*NULL;*/
+	while ( env[i] && (env[i][len] != '=' || strncmp(var, env[i], len)) )
 		i++;
-	}
+	printf("%s\n", (env[i]) ? env[i] + len + 1 : NULL);
 
-	while(token != NULL)
-	{
-		printf("%s\n", token);
-		token = strtok(NULL, ":");
-	}
-
-	return (0);
+	return(0);
 }
