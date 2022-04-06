@@ -6,23 +6,6 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-/*
-char search_path(int ac, char **av, char **env)
-{
-	unsigned int i;
-
-	i = 0;
-	while (env[i] != NULL)
-	{
-		printf("%s\n", env[i]);
-		i++;
-	}
-	return (0);
-}
-*/
-
-/*deberíamos pasarle una copia del string*/
-
 void clearScreen() {
 	printf("\033[2J\033[1;1H");
 }
@@ -122,7 +105,7 @@ int main(void)
 							{
 								free(line_read);
 								perror("Comando no encontrado\n");
-								exit(0);
+								return(0);
 							}
 						}
 						else

@@ -128,6 +128,7 @@ int main(void)
 						else
 						{
 							wait (NULL);
+							continue;
 						}
 				}
 				else
