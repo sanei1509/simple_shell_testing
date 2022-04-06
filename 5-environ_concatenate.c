@@ -1,4 +1,4 @@
-nclude <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -48,15 +48,15 @@ char *_getenv(const char *var, char **env)
 }
 
 
-int main ()
+int main (int __attribute__((unused)) ac, char __attribute__((unused)) **av, char **env)
 {
         char *var = "PATH";
         char *path = NULL;
         char *prueba = "/ls", *concatenated = NULL;
         char **aux = NULL;
-        int cont = 0, sizepath = 0, j = 0;
-        
+        int cont = 0, sizepath = 0, j = 0, c = 0;
         char *tokenized = NULL;
+
         path = _getenv(var, env);
         sizepath = count_spaces(path);
         aux = malloc(sizeof(char *) * sizepath);
@@ -69,7 +69,23 @@ int main ()
                 tokenized= strtok(NULL, ":");
         }
 
+	while (j < sizepath)
+        {
+                printf("Soy el aux: %s\n", aux[j]);
+                j++;
+        }
 
-                return(0);
+        concatenated = _strcat(aux[1], prueba);
+        printf("%s\n",aux[0]);
+
+        for (c = 0; c < sizepath; c++)
+        {
+                printf("no se q:%s\n", aux[c]);
+        }
+        printf("%d\n", sizepath);
+        free(aux);
+        printf("%s\n", concatenated);
+
+	return(0);
 }
 
