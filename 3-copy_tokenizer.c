@@ -7,25 +7,37 @@
 #include <sys/wait.h>
 
 /*
-void clean_all(char *line_read, char **argv)
+char search_path(int ac, char **av, char **env)
 {
-	free(line_read);
-	line_read = NULL;
-	free(argv);
+	unsigned int i;
+
+	i = 0;
+	while (env[i] != NULL)
+	{
+		printf("%s\n", env[i]);
+		i++;
+	}
+	return (0);
 }
 */
 
-int count_spaces(char *line_read_copy)
+/*deberíamos pasarle una copia del string*/
+
+void clearScreen() {
+	printf("\033[2J\033[1;1H");
+}
+
+int count_spaces(char *aux_line)
 {
 	int s = 0;
-	char *token_aux;
+	char *aux;
+        
+	aux = strtok(aux_line, " ");
 
-	token_aux = strtok(line_read_copy, " ");
-
-	while (token_aux != NULL)
+	while (aux != NULL)
 	{
-		token_aux = strtok(NULL, " ");
 		s++;
+		aux = strtok(NULL, " ");
 	}
 
 	return (s);
@@ -49,6 +61,7 @@ int get_hijo_id(void)
 	return (0);
 }
 
+
 /**
 *main - take the input command of the user
 *Return: 0
@@ -56,68 +69,58 @@ int get_hijo_id(void)
 
 int main(void)
 {
-	int bytes_read, i = 0, count_tokens = 0;
-	size_t size;
-	char *line_read, *token;
-	char **argv = malloc(count_tokens * sizeof(char *));
-	/*execve cosas*/
-	char *env = {NULL};
-
+	int bytes_read = 0, i = 0;
+	size_t size = 0;
+	char *line_read = NULL, *token = NULL, *env = {NULL};
+	char *argv[25] = {NULL};
+        
 	pid_t forkResultado;
-
+	
 	while (1)
 	{
 		i = 0;
 		printf("#cisfun$");
 
-		/*size = TAM_MAX; */
-		/*line_read = (char *) malloc (size + 1);*/
 		bytes_read = getline(&line_read, &size, stdin);
-
-		if (bytes_read == -1)
 		
-			free(line_read);		
-			puts("no se reconoce como entrada valida");
-			return (1);
+		if(line_read[0] == '\n')
+		{
+			free(line_read);
+			line_read = NULL;
+			continue;
+		}
+		if (bytes_read == -1 || line_read[0] == EOF)
+		{
+			free(line_read);
+			perror("Error bytes read");
+			break;
 		}
 		else
 		{
-			/*tokenizamos la linea leida*/
 			line_read = strtok(line_read, "\n");
 			token = strtok(line_read, " ");
 
-		/*puts(line_read);*/
 			while (token != NULL)
 			{
 				argv[i] = token;
 				token = strtok(NULL, " ");
 				i++;
-				
-				if(!argv)
-				{
-					exit(EXIT_FAILURE);
-					printf("No se pasan argumentos");
-				}
-				free(line_read);
-				line_read = NULL;
 			}
-			count_tokens = i + 1;
-			printf("%d\n", count_tokens);
-			if (strcmp(argv[0], "exit") == 0)
-			{
-				break;
-			}
+
 				if (line_read != NULL)
 				{
+					if (strcmp(argv[0], "exit") == 0 || strcmp(argv[0], "end of file"))
+						break;
+					if (strcmp(argv[0], "EOF") == 0)
+						break;
 					forkResultado = fork();
 						if (forkResultado == 0)
 						{
 							printf ("creando hijo..\n");
-							get_padre_id();
-							get_hijo_id();
-							/*process of execution order*/
+							get_padre_id(), get_hijo_id();
 							if ((execve(argv[0], argv, &env) == -1))
 							{
+								free(line_read);
 								perror("Comando no encontrado\n");
 								exit(0);
 							}
@@ -125,16 +128,20 @@ int main(void)
 						else
 						{
 							wait (NULL);
-							continue;
 						}
+						/*aca no*/
 				}
 				else
 				{
-					printf("Invalid Command\n");
+					free(line_read);
+					line_read = NULL;
+					continue;
 				}
 		}
 	free(line_read);
-	free(argv);
+	line_read = NULL;
 	}
+	free(line_read);
+	line_read = NULL;
 	return (0);
 }
