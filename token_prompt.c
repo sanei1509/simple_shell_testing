@@ -37,7 +37,7 @@ int count_spaces(char *aux_line)
 	return (s);
 }
 
-int get_padre_id(void)
+int getpadre_id(void)
 {
 	pid_t my_ppid;
 
@@ -46,7 +46,7 @@ int get_padre_id(void)
 	return (0);
 }
 
-int get_hijo_id(void)
+int gethijo_id(void)
 {
 	pid_t my_pid;
 
@@ -108,7 +108,7 @@ int main(void)
 				if (forkResultado == 0)
 				{
 					printf ("creando hijo..\n");
-					get_padre_id(), get_hijo_id();
+					getpadre_id(), gethijo_id();
 					/*process of execution order*/
 					if ((execve(argv[0], argv, &env) == -1))
 					{
