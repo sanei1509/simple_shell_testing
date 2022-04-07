@@ -1,16 +1,30 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
-
-int main(int ac, char **av, char **env)
-{
-
-	unsigned int i;
+char *_getenv(const char *var, char **env)
+{	
+	unsigned int i = 0;
+	unsigned int len = strlen(var);
 	
-	i = 0;
-	while (env[i] != NULL)
-	{
-		printf("%s\n", env[i]);
+	if (!env || ! *var || strchr(var,'='))
+		return (NULL);
+	else
+	while (env[i] && (env[i][len] != '=' || strncmp(var, env[i], len)))
 		i++;
-	}
-	return (0);
+
+	return (env[i]) ? (env[i] + len + 1) : (NULL);
+}
+
+
+int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char **env)
+{
+	char *var = "PATH";	
+	char *path;
+
+	path = _getenv(var, env);
+
+	printf("%s\n", path);
+
+	return(0);
 }
