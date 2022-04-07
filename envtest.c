@@ -16,20 +16,37 @@ int count_spaces(char *aux_line)
 
 char *_strcat(char *dest, char *src)
 {
-	char *init = NULL;
+        int dest_length = 0, src_length = 0, i = 0;
+        char *new_string = NULL;
 
-	if ((dest == NULL) && (src == NULL))
-		return (NULL);
-	init = dest;
-	while (*init != '\0')
-		init++;
-	while(*src != '\0')
-		*init++ = *src++;
-	*init = '\0';
-	return (dest);
+        while (dest[dest_length] != '\0')
+                dest_length++;
+
+        while (src[src_length] != '\0')
+                src_length++;
+
+        new_string = calloc(2, (dest_length + src_length + 1) * sizeof(char));
+
+        while (dest_length > i)
+        {
+                new_string[i] = dest[i];
+                i++;
+        }
+
+        i = 0;
+
+        while (src_length > i)
+        {
+                new_string[dest_length + i] = src[i];
+                i++;
+        }
+
+        new_string[dest_length + i + 1] = '\0';
+
+        return (new_string);
 }
 
-/*i
+/*
 {	
 	char *concatenated = NULL;
 	int j = 0, c = 0;
@@ -87,31 +104,23 @@ char **create_aux (char **aux1)
 	return(aux1);
 }
 
-char *after_concat (char **aux1, char *line)
-{
-	int i, sizepath, j = 0;
-	char *concatenated = NULL;
-	char *path = NULL;
-	sizepath = count_spaces(path);
-	path = getenv("PATH");
-
-	for(i = 0; i < sizepath; i++, j++)
-	{
-		concatenated = _strcat(aux1[j], line);
-		printf("%s\n", concatenated);
-	}
-
-	return(concatenated);	
-}
-
 int main()
 {
-	char **aux = NULL;
 	char *prueba = "/ls";
-	char *stringcon = NULL;
+	int i = 0;
+	char **aux = NULL;
 	aux = create_aux(aux);
 
-	stringcon = after_concat(aux, prueba);
-	printf ("%s\n", stringcon);
+	for (i = 0; aux[i]; i++)
+	{
+		printf("solo toke: %s\n", aux[i]);
+	}
+
+	for (i = 0; aux[i] != NULL; i++)
+	{
+		aux[i] = _strcat(aux[i], prueba);
+		printf("%s\n", aux[i]);
+	}
+
 	return(0);
 }
