@@ -1,10 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+int _strncmp(const char s1[], const char s2[], size_t n) {
+
+	unsigned char c1 = '\0';
+	unsigned char c2 = '\0';
+	int i;
+
+	for (i = 0; i < (int) n; i++) {
+
+		c1 = (unsigned char) s1[i];
+		c2 = (unsigned char) s2[i];
+
+		if ((c1 == '\0') || (c1 != c2)) {
+
+			return (c1 - c2);
+
+		}
+
+	}
+
+	return (c1 - c2);
+
+}
 
 int count_spaces(char *aux_line)
 {
@@ -41,7 +63,7 @@ char *_getenv(const char *var, char **env)
 	if (!env || ! *var || strchr(var,'='))
 		return (NULL);
 	else
-	while (env[i] && (env[i][len] != '=' || strncmp(var, env[i], len)))
+	while (env[i] && (env[i][len] != '=' || _strncmp(var, env[i], len)))
 		i++;
 
 	return (env[i]) ? (env[i] + len + 1) : (NULL);
