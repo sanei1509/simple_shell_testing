@@ -96,18 +96,23 @@ int main (int __attribute__((unused)) ac, char __attribute__((unused)) **av, cha
                 printf("Soy el aux: %s\n", aux[j]);
                 j++;
         }
-
+	printf("******************************");
         concatenated = _strcat(aux[1], prueba);
-        printf("%s\n",aux[0]);
+	concatenated = _strcat(aux[2], prueba);
+	concatenated = _strcat(aux[3], prueba);
+	
+        /*printf("%s\n",aux[0]);*/
 
         for (c = 0; c < sizepath; c++)
         {
                 printf("no se q:%s\n", aux[c]);
         }
+
+	/*
         printf("%d\n", sizepath);
         free(aux);
         printf("%s\n", concatenated);
-
+	*/
 	return(0);
 }
 

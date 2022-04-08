@@ -91,7 +91,7 @@ char **create_aux (char **aux1)
 	int cont = 0, sizepath = 0;
 	path = getenv("PATH");
 	sizepath = count_spaces(path);
-	aux1 = malloc(sizeof(char *) * sizepath);
+	aux1 = malloc(sizeof(char *) * sizepath + 1);
 	tokenized = strtok(path, ":");
 
 	while (tokenized != NULL && cont < sizepath)

@@ -68,11 +68,9 @@ int main(void)
 		
 		if(line_read[0] == '\n')
 		{
-			free(line_read);
-			line_read = NULL;
 			continue;
 		}
-		if (bytes_read == -1 || line_read[0] == EOF)
+		if (bytes_read == -1)
 		{
 			free(line_read);
 			perror("Error bytes read");
@@ -111,6 +109,7 @@ int main(void)
 						else
 						{
 							wait (NULL);
+							continue;
 						}
 						/*aca no*/
 				}
@@ -121,8 +120,8 @@ int main(void)
 					continue;
 				}
 		}
-	free(line_read);
-	line_read = NULL;
+		free(line_read);
+		line_read = NULL;
 	}
 	free(line_read);
 	line_read = NULL;
