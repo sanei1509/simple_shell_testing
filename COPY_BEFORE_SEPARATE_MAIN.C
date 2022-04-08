@@ -35,7 +35,7 @@ void clean_everything(char *line, char *array)
 	free(array);
 }
 
-char *_strcat(char *dest, char *src)
+char* _strcat(char *dest, char *src)
 {
         int dest_length = 0, src_length = 0, i = 0;
         char *new_string = NULL;
@@ -67,7 +67,7 @@ char *_strcat(char *dest, char *src)
         return (new_string);
 }
 
-int count_paths(char *aux_line)
+int count_spaces(char *aux_line)
 {
 	int i, cont = 0;
 
@@ -169,7 +169,7 @@ char **create_aux (char **aux1, char **env_aux)
 	char *path = NULL;
 	int cont = 0, sizepath = 0;
 	path = _getenv(var, env_aux);
-	sizepath = count_paths(path);
+	sizepath = count_spaces(path);
 	aux1 = malloc(sizeof(char *) * sizepath + 1);
 	tokenized = strtok(path, ":");
 
@@ -182,7 +182,7 @@ char **create_aux (char **aux1, char **env_aux)
 	return (aux1);
 }
 
-char *compare_path(char **array, char *cmd)
+char* compare_path(char **array, char *cmd)
 {
 	struct stat buf;
 	char *str = _strcat("/", cmd), *path_cmd = NULL;
@@ -203,31 +203,11 @@ char *compare_path(char **array, char *cmd)
 
 }
 
-char** parser_line(char **array, char * line)
-{
-	int count_tokens = 0, i = 0;
-	char *token = NULL;
-
-	line = strtok(line, "\n");
-	count_tokens = count_espacios(line);
-	array = calloc(count_tokens + 1, sizeof(char *));
-	token = strtok(line, " ");
-
-	while (token != NULL)
-	{
-		array[i] = token;
-		token = strtok(NULL, " ");
-		i++;
-	}
-
-	return (array);
-}
-
 int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char **env)
 {
-	int bytes_read = 0;
+	int bytes_read = 0, i = 0, count_tokens = 0;
 	size_t size = 0;
-	char *line_read = NULL, *env_t = {NULL};
+	char *line_read = NULL, *token = NULL, *env_t = {NULL};
 	char **argv = NULL;
        	char **arr_paths = NULL;
 
@@ -237,6 +217,7 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 
 	while (1)
 	{
+		i = 0;
 		printf("#cisfun$");
 
 		bytes_read = getline(&line_read, &size, stdin);
@@ -251,8 +232,19 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 		else
 		{
 			/*Parseamos o limpiamos y contamos los tokens para alojar memoria*/
-			argv = parser_line(argv, line_read);
+			line_read = strtok(line_read, "\n");
+			count_tokens = count_espacios(line_read);
+			argv = calloc(count_tokens + 1, sizeof(char *));
+			token = strtok(line_read, " ");
 
+			while (token != NULL)
+			{
+				argv[i] = token;
+				token = strtok(NULL, " ");
+				i++;
+			}
+			argv[i] = NULL;
+			
 			if (line_read != NULL )
 			{
 				if ((_strcmp(argv[0], "exit") == 0) || (_strcmp(argv[0], "EOF") == 0))
