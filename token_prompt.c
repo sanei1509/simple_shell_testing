@@ -28,14 +28,14 @@ int _strncmp(const char s1[], const char s2[], size_t n) {
 }
 
 
-void clean_everything(char * line, char * array)
+void clean_everything(char *line, char *array)
 {
 	free(line);
 	line = NULL;
 	free(array);
 }
 
-char *_strcat(char *dest, char *src)
+char* _strcat(char *dest, char *src)
 {
         int dest_length = 0, src_length = 0, i = 0;
         char *new_string = NULL;
@@ -179,7 +179,6 @@ char **create_aux (char **aux1, char **env_aux)
                 cont++;
                 tokenized= strtok(NULL, ":");
         }
-	
 	return (aux1);
 }
 
@@ -198,6 +197,8 @@ char* compare_path(char **array, char *cmd)
 		}
 	}
 
+	free(path_cmd);
+	free(str);
 	return (NULL);
 
 }
@@ -242,15 +243,18 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 				token = strtok(NULL, " ");
 				i++;
 			}
+			argv[i] = NULL;
 			
 			if (line_read != NULL )
 			{
 				if ((_strcmp(argv[0], "exit") == 0) || (_strcmp(argv[0], "EOF") == 0))
 				{
+					free(line_read), free(arr_paths);
 					break;
 				}
 				if ((compare_path(arr_paths, argv[0])) == NULL)
 				{
+					free(arr_paths);
 					perror("Error");
 					continue;
 				}
@@ -279,14 +283,18 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 			{
 				free(line_read);
 				line_read = NULL;
+				free(arr_paths);
 				continue;
 			}
-			free(arr_paths);
+			bytes_read = 0;
+			free(line_read);
+			line_read = NULL;
 		}
 		free(line_read);
 		line_read = NULL;
 		free(argv);
 	}
+	free(arr_paths);
 	free(line_read);
 	line_read = NULL;
 	free(argv);
