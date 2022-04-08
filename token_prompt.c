@@ -6,6 +6,35 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+int _strncmp(const char s1[], const char s2[], size_t n) {
+
+	unsigned char c1 = '\0';
+	unsigned char c2 = '\0';
+	int i;
+
+	for (i = 0; i < (int) n; i++) {
+
+		c1 = (unsigned char) s1[i];
+		c2 = (unsigned char) s2[i];
+
+		if ((c1 == '\0') || (c1 != c2)) {
+
+			return (c1 - c2);
+
+		}
+
+	}
+	return (c1 - c2);
+}
+
+
+void clean_everything(char * line, char * array)
+{
+	free(line);
+	line = NULL;
+	free(array);
+}
+
 char *_strcat(char *dest, char *src)
 {
         int dest_length = 0, src_length = 0, i = 0;
@@ -36,7 +65,7 @@ char *_strcat(char *dest, char *src)
         new_string[dest_length + i + 1] = '\0';
 
         return (new_string);
-} 
+}
 
 int count_spaces(char *aux_line)
 {
@@ -47,23 +76,8 @@ int count_spaces(char *aux_line)
 		if (aux_line[i] == ':')
 		cont ++;
 	}
-	return(cont + 1); 
+	return (cont + 1);
 }
-
-
-/*
-char search_path(int ac, char **av, char **env)
-{
-	unsigned int i;
-	i = 0;
-	while (env[i] != NULL)
-	{
-		printf("%s\n", env[i]);
-		i++;
-	}
-	return (0);
-}
-*/
 
 int _strcmp(char *s1, char *s2)
 {
@@ -97,7 +111,7 @@ int count_espacios(char *aux_line)
 {
 	int s = 0;
 	char *aux, *copy_line = strdup(aux_line);
-        
+
 	aux = strtok(copy_line, " ");
 
 	while (aux != NULL)
@@ -112,10 +126,8 @@ int count_espacios(char *aux_line)
 int getpadre_id(void)
 {
 	pid_t my_ppid;
-
 	my_ppid = getppid();
-	printf("%u\n", my_ppid);
-	return (0);
+	return (my_ppid);
 }
 
 int gethijo_id(void)
@@ -123,11 +135,14 @@ int gethijo_id(void)
 	pid_t my_pid;
 
 	my_pid = getpid();
-	printf("%u\n", my_pid);
-	return (0);
+	return (my_pid);
 }
 
 
+/**
+ **_getenv - return the full var PATH
+ *@var - 
+ */
 char *_getenv(char *var, char **environ)
 {	
 	unsigned int i = 0;
@@ -136,12 +151,11 @@ char *_getenv(char *var, char **environ)
 	if (!environ || ! *var || strchr(var,'='))
 		return (NULL);
 	else
-	while (environ[i] && (environ[i][len] != '=' || strncmp(var, environ[i], len)))
+	while (environ[i] && (environ[i][len] != '=' || _strncmp(var, environ[i], len)))
 		i++;
 
 	return (environ[i]) ? (environ[i] + len + 1) : (NULL);
 }
-
 
 
 /**
@@ -165,7 +179,7 @@ char **create_aux (char **aux1, char **env_aux)
                 cont++;
                 tokenized= strtok(NULL, ":");
         }
-
+	
 	return (aux1);
 }
 
@@ -197,7 +211,7 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
        	char **arr_paths = NULL;
 
 	pid_t forkResultado;
-	
+
 	arr_paths = create_aux(arr_paths, env);
 
 	while (1)
@@ -216,12 +230,10 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 		}
 		else
 		{
-			/*Parseamos o limpiamos la entrada para su uso*/
+			/*Parseamos o limpiamos y contamos los tokens para alojar memoria*/
 			line_read = strtok(line_read, "\n");
 			count_tokens = count_espacios(line_read);
-
 			argv = calloc(count_tokens + 1, sizeof(char *));
-
 			token = strtok(line_read, " ");
 
 			while (token != NULL)
@@ -233,9 +245,10 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 			
 			if (line_read != NULL )
 			{
-				if ((strcmp(argv[0], "exit") == 0) || (strcmp(argv[0], "EOF") == 0))
-					break, free(argv), free(line_read);
-
+				if ((_strcmp(argv[0], "exit") == 0) || (_strcmp(argv[0], "EOF") == 0))
+				{
+					break;
+				}
 				if ((compare_path(arr_paths, argv[0])) == NULL)
 				{
 					perror("Error");
@@ -268,6 +281,7 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 				line_read = NULL;
 				continue;
 			}
+			free(arr_paths);
 		}
 		free(line_read);
 		line_read = NULL;
