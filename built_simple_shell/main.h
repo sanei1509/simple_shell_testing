@@ -21,6 +21,7 @@ int count_espacios(char *aux_line);
 
 int getpadre_id(void);
 int gethijo_id(void);
+void ctrl_c (int signal);
 
 
 char **return_env(char **environ);
