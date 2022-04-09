@@ -14,3 +14,9 @@ int gethijo_id(void)
 	my_pid = getpid();
 	return (my_pid);
 }
+
+void ctrl_c (int signal)
+{
+	if (signal == SIGINT)
+		write(1, "\n$ ", 3);
+}
