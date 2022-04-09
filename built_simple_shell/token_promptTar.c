@@ -1,4 +1,5 @@
 #include "main.h"
+#include <ctype.h>
 
 extern char **environ;
 
@@ -24,24 +25,28 @@ int count_espacios(char *aux_line)
 	}
 
 	return (s);
-}
-
-int getpadre_id(void)
-{
-	pid_t my_ppid;
-	my_ppid = getppid();
-	return (my_ppid);
-}
-
-int gethijo_id(void)
-{
-	pid_t my_pid;
-
-	my_pid = getpid();
-	return (my_pid);
-}
+}	
 
 /*funciones para estructurar*/
+
+/*
+void input_validate(char *line, char *first_token, char *res_valid_cmd)
+{
+	if(line[0] == ' ' )
+		continue;
+	if ((_strcmp(first_token, "exit") == 0) || (_strcmp(first_token, "EOF") == 0))
+	{
+		break;
+	}
+	if (res_valid_cmd == NULL)
+	{
+		perror("Error");
+		continue;
+	}
+	
+}
+*/
+
 char** parser_line(char **array, char * line)
 {
 	int count_tokens = 0, i = 0;
@@ -71,14 +76,11 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 {
 	int bytes_read = 0;
 	size_t size = 0;
-	char *line_read = NULL;
-	char **argv = NULL;
-       	char **arr_paths = NULL;
-	char *ret_pathcmd;
-
-	pid_t forkResultado;
+	char *line_read = NULL, *ret_pathcmd = NULL, *aux_cmd = NULL;
+	char **argv = NULL, **arr_paths = NULL;
+	pid_t forkResultado = 0;
+	
 	arr_paths = create_aux(arr_paths, env);
-
 	while (1)
 	{
 		if (isatty(STDIN_FILENO) == 1)
@@ -101,22 +103,24 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 			ret_pathcmd = compare_path(arr_paths, argv[0]);
 			if (line_read != NULL )
 			{
-				if(line_read[0] == ' ' )
-					continue;
 				if ((_strcmp(argv[0], "exit") == 0) || (_strcmp(argv[0], "EOF") == 0))
 					break;
 				if (ret_pathcmd == NULL)
 				{
 					perror("Error");
 					continue;
-				}
+				}	
+
 				if (_strcmp(argv[0], "env") == 0)
 				{
 					return_env(environ);
 					continue;
 				}
 			/*reasignación del comando paraentender que le mandamos*/
+				aux_cmd = argv[0];
+				printf("%s\n", aux_cmd);
 				argv[0] = ret_pathcmd;
+			
 				forkResultado = fork();
 				if (forkResultado == 0)
 				{
@@ -125,8 +129,6 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 					/*process of execution order*/
 					if ((execve(argv[0], argv, env) == -1))
 					{
-						if(line_read[0] == ' ')
-							continue;
 						free(line_read);
 						perror("Comando no encontrado\n");
 						exit(0);
