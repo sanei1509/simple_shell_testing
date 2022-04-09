@@ -83,6 +83,7 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 	arr_paths = create_aux(arr_paths, env);
 	while (1)
 	{
+		signal(SIGINT, ctrl_c);
 		if (isatty(STDIN_FILENO) == 1)
 			write(1, "$ ", 2);
 
