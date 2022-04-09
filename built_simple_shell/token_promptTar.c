@@ -138,12 +138,8 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 			}
 			free(arr_paths);
 		}
-		free(line_read);
-		line_read = NULL;
-		free(argv);
+		clean_everything(line_read, argv);
 	}
-	free(line_read);
-	line_read = NULL;
-	free(argv);
+	clean_everything(line_read, argv);
 	return (0);
 }
