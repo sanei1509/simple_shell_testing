@@ -1,5 +1,4 @@
 #include "main.h"
-#include <ctype.h>
 
 extern char **environ;
 
@@ -106,11 +105,12 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 			{
 				if ((_strcmp(argv[0], "exit") == 0) || (_strcmp(argv[0], "EOF") == 0))
 					break;
+				
 				if (ret_pathcmd == NULL)
 				{
 					perror("Error");
 					continue;
-				}	
+				}
 
 				if (_strcmp(argv[0], "env") == 0)
 				{
@@ -119,7 +119,7 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 				}
 			/*reasignación del comando paraentender que le mandamos*/
 				argv[0] = ret_pathcmd;
-			
+					
 				forkResultado = fork();
 				if (forkResultado == 0)
 				{
