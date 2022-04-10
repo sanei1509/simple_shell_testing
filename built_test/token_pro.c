@@ -1,7 +1,7 @@
 #include "main.h"
-#include <ctype.h>
 
 extern char **environ;
+
 
 int _isalpha(int c)
 {
@@ -107,10 +107,10 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 		else
 		{
 			/*Parseamos o limpiamos y contamos los tokens para alojar memoria*/
-			argv = parser_line(argv, line_read);			
+			argv = parser_line(argv, line_read);
 			/*cargo variable con el retorno de compararar rutas con stat*/
 			ret_pathcmd = compare_path(arr_paths, argv[0]);
-			if (line_read != NULL )
+			if (line_read != NULL)
 			{
 				if ((_strcmp(argv[0], "exit") == 0) || (_strcmp(argv[0], "EOF") == 0))
 					break;
@@ -122,6 +122,11 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 
 				if (_isalpha(argv[0][0]) == 1)
 				{
+					if(ret_pathcmd == NULL)
+					{
+						perror("Error");
+						continue;
+					}
 					argv[0] = ret_pathcmd;
 					forkResultado = fork();
 					if (forkResultado == 0)
@@ -143,7 +148,7 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 					}
 				}
 				else
-				{
+				{	
 					forkResultado = fork();
 					if (forkResultado == 0)
 					{
@@ -166,9 +171,7 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 			}
 			else
 			{
-				free(line_read);
-				line_read = NULL;
-				continue;
+				free(line_read),line_read = NULL; continue;
 			}
 			free(arr_paths);
 		}
