@@ -16,6 +16,9 @@ char *_strcat(char *dest, char *src);
 int _strcmp(char *s1, char *s2);
 int _strlen(char *s);
 
+int _isalpha(int c);
+char *_strdup(char *str);
+
 int count_paths(char *aux_line);
 int count_espacios(char *aux_line);
 
@@ -23,13 +26,13 @@ int getpadre_id(void);
 int gethijo_id(void);
 void ctrl_c (int signal);
 
-
 char **return_env(char **environ);
 char *_getenv(char *var, char **environ);
 char **create_aux (char **aux1, char **env_aux);
 char* compare_path(char **array, char *cmd);
 
-
+/*structuring*/
+char** parser_line(char **array, char * line);
 
 
 
