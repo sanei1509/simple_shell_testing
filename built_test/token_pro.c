@@ -2,7 +2,7 @@
 
 extern char **environ;
 
-void clean_everything(char *line, char **array)
+void clean_everything(char * line, char ** array)
 {
 	free(line);
 	line = NULL;
@@ -26,27 +26,7 @@ int count_espacios(char *aux_line)
 	return (s);
 }
 
-/*funciones para estructurar*/
-
-/*
-void input_validate(char *line, char *first_token, char *res_valid_cmd)
-{
-	if(line[0] == ' ' )
-		continue;
-	if ((_strcmp(first_token, "exit") == 0) || (_strcmp(first_token, "EOF") == 0))
-	{
-		break;
-	}
-	if (res_valid_cmd == NULL)
-	{
-		perror("Error");
-		continue;
-	}
-	
-}
-*/
-
-char** parser_line(char **array, char *line)
+char** parser_line(char **array, char * line)
 {
 	int count_tokens = 0, i = 0;
 	char *token = NULL;
@@ -79,6 +59,11 @@ void execute_cmd(char *line, char *cmd, char **array, char **env)
 }
 
 
+void interactive_mode()
+{
+	if (isatty(STDIN_FILENO) == 1)
+		write(1, "$ ", 2);
+}
 
 /**
 *main - take the input command of the user
@@ -92,19 +77,17 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 	char *line_read = NULL, *ret_pathcmd = NULL;
 	char **argv = NULL, **arr_paths = NULL;
 	pid_t forkResultado = 0;
-
+	
 	arr_paths = create_aux(arr_paths, env);
 	while (1)
 	{
 		signal(SIGINT, ctrl_c);
-		if (isatty(STDIN_FILENO) == 1)
-			write(1, "$ ", 2);
+		interactive_mode();
 
 		bytes_read = getline(&line_read, &size, stdin);
 
 		if (line_read[0] == '\n')
 			continue;
-
 		if (bytes_read == -1 || line_read[0] == EOF)
 		{
 			perror("Error");
@@ -119,6 +102,7 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 			{
 				if ((_strcmp(argv[0], "exit") == 0) || (_strcmp(argv[0], "EOF") == 0))
 					break;
+								
 				if (_strcmp(argv[0], "env") == 0)
 				{
 					return_env(environ);
@@ -127,25 +111,24 @@ int main(int __attribute__((unused)) ac, char __attribute__((unused)) **av, char
 
 				if (_isalpha(argv[0][0]) == 1)
 				{
-					if (ret_pathcmd == NULL)
+					if(ret_pathcmd == NULL)
 					{
 						perror("Error");
 						continue;
 					}
-
 					argv[0] = ret_pathcmd;
 					forkResultado = fork();
-					((forkResultado == 0) ? (execute_cmd(line_read, argv[0], argv, env)) : (void)(wait (NULL)));
+					(forkResultado == 0) ? execute_cmd(line_read, argv[0], argv, environ) : (void) wait(NULL); continue;
 				}
 				else
-				{
+				{	
 					forkResultado = fork();
-					((forkResultado == 0) ? (execute_cmd(line_read, argv[0], argv, env)) : (void)(wait (NULL)));
+					(forkResultado == 0) ? execute_cmd(line_read, argv[0], argv, environ) : (void) wait(NULL); continue;
 				}
 			}
 			else
 			{
-				free(line_read), line_read = NULL; continue;
+				free(line_read),line_read = NULL; continue;
 			}
 			free(arr_paths);
 		}
